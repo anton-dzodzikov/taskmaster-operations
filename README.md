@@ -1,6 +1,18 @@
 # Taskmaster Operations
 The catalogue of operations
 
+## Endpoints
+
+### Health
+<pre>
+GET /status/health
+</pre>
+
+### Version
+<pre>
+GET /status/version
+</pre>
+
 ## Build
 
 ### JAR
