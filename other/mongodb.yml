@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  # DB itself
+  mongodb:
+    image: 'bitnami/mongodb:latest'
+    ports:
+    - '27017:27017'
+#    environment:
+#      MONGODB_USERNAME: 'admin'
+#      MONGODB_DATABASE: 'local'
+#      MONGODB_PASSWORD: 'pass'
+
+  # web-interface
+  mongoadmin:
+    image: 'mongoclient/mongoclient'
+    ports:
+    - '3000:3000'
+    links:
+      - mongodb
