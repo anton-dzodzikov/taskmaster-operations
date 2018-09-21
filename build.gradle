@@ -8,6 +8,7 @@ version '1.0-SNAPSHOT'
 
 sourceCompatibility = 1.8
 def springVersion = '2.0.5.RELEASE'
+def reactorVersion = '3.1.9.RELEASE'
 
 repositories {
     mavenCentral()
@@ -16,10 +17,11 @@ repositories {
 dependencies {
     compile "org.springframework.boot:spring-boot-starter:$springVersion"
     compile "org.springframework.boot:spring-boot-starter-webflux:$springVersion"
-    compile "org.springframework.boot:spring-boot-starter-data-mongodb:$springVersion"
+    compile "org.springframework.boot:spring-boot-starter-data-mongodb-reactive:$springVersion"
     compile "org.springframework.boot:spring-boot-starter-actuator:$springVersion"
 
     testCompile "org.springframework.boot:spring-boot-starter-test:$springVersion"
+    testCompile "io.projectreactor:reactor-test:$reactorVersion"
 }
 
 springBoot {
