@@ -1,6 +1,7 @@
 package taskmaster.operations.dao;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,13 @@ public class OperationTemplateRepositoryIntegrationTest {
     @Autowired
     OperationTemplateRepository repository;
 
+    @Before
+    public void runBeforeEachTest() {
+        if (repository != null) {
+            repository.deleteAll();
+        }
+    }
+
     @Test
     public void repositoryExistsInContext() {
         assertNotNull(repository);
@@ -27,8 +35,7 @@ public class OperationTemplateRepositoryIntegrationTest {
     @Test
     public void saveWorks() {
         // Given
-        repository.deleteAll();
-        OperationTemplate template = new OperationTemplate(1, "TEST_OPERATION", "content");
+        OperationTemplate template = new OperationTemplate("TEST_OPERATION", "content");
 
         // When
         Mono<OperationTemplate> result = repository.save(template);
@@ -38,6 +45,23 @@ public class OperationTemplateRepositoryIntegrationTest {
                 .assertNext(operationTemplate -> {
                     assertNotNull(operationTemplate);
                     assertEquals("TEST_OPERATION", operationTemplate.getName());
+                })
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    public void idIsBeingGeneratedAutomatically() {
+        // Given
+        OperationTemplate template = new OperationTemplate("TEST_OPERATION", "content");
+
+        // When
+        Mono<OperationTemplate> result = repository.save(template);
+
+        // Then
+        StepVerifier.create(result)
+                .assertNext(operationTemplate -> {
+                    assertNotNull(operationTemplate.getId());
                 })
                 .expectComplete()
                 .verify();

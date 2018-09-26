@@ -5,25 +5,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document
 public class OperationTemplate {
-    // TODO: Generate ID automatically
-    // TODO: Make ID unique
     @Id
-    private Integer id;
+    private String id;
     private String name;
     private String body;
 
-    public OperationTemplate(Integer id, String name, String body) {
-        this.id = id;
+    public OperationTemplate(String name, String body) {
         this.name = name;
         this.body = body;
     }
 
-    public Integer getId() {
+    public String getId() {
         return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public String getName() {
