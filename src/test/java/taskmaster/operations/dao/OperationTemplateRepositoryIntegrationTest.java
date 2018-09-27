@@ -1,6 +1,5 @@
 package taskmaster.operations.dao;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,7 +11,8 @@ import reactor.test.StepVerifier;
 import taskmaster.operations.OperationsApplication;
 import taskmaster.operations.domain.OperationTemplate;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = OperationsApplication.class)
@@ -62,6 +62,26 @@ public class OperationTemplateRepositoryIntegrationTest {
         StepVerifier.create(result)
                 .assertNext(operationTemplate -> {
                     assertNotNull(operationTemplate.getId());
+                })
+                .expectComplete()
+                .verify();
+    }
+
+    @Test
+    public void findByNameWorks() {
+        // Given
+        OperationTemplate template = new OperationTemplate("FIND_ME", "content");
+        Mono<OperationTemplate> saved = repository.save(template);
+        saved.block();
+
+        // When
+        Mono<OperationTemplate> result = repository.findFirstByName("FIND_ME");
+
+        // Then
+        StepVerifier.create(result)
+                .assertNext(operationTemplate -> {
+                    assertNotNull(result);
+                    assertEquals("content", operationTemplate.getBody());
                 })
                 .expectComplete()
                 .verify();
