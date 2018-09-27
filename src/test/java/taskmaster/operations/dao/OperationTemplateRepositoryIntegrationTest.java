@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
@@ -23,7 +24,7 @@ public class OperationTemplateRepositoryIntegrationTest {
     @Before
     public void runBeforeEachTest() {
         if (repository != null) {
-            repository.deleteAll();
+            repository.deleteAll().block();
         }
     }
 
@@ -85,5 +86,21 @@ public class OperationTemplateRepositoryIntegrationTest {
                 })
                 .expectComplete()
                 .verify();
+    }
+
+    @Test
+    public void nameDuplicationIsNotAllowed() {
+        // Given
+        OperationTemplate template1 = new OperationTemplate("UNIQUE", "content");
+        Mono<OperationTemplate> firstInsertion = repository.save(template1);
+        firstInsertion.block();
+
+        // When
+        OperationTemplate template2 = new OperationTemplate("UNIQUE", "content2");
+        Mono<OperationTemplate> result = repository.save(template2);
+
+        // Then
+        StepVerifier.create(result)
+                .verifyError(DuplicateKeyException.class);
     }
 }
